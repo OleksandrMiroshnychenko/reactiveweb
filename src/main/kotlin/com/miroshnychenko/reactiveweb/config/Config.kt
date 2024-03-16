@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 import springfox.documentation.builders.RequestHandlerSelectors
+import springfox.documentation.builders.RequestParameterBuilder
+import springfox.documentation.schema.ScalarType
+import springfox.documentation.service.ParameterType
+import springfox.documentation.service.RequestParameter
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spring.web.plugins.Docket
 import java.time.Duration
@@ -48,9 +52,20 @@ class Config : AbstractReactiveMongoConfiguration() {
 
     @Bean
     fun api(): Docket {
-        return Docket(DocumentationType.SWAGGER_2).select()
-            .apis(RequestHandlerSelectors.withClassAnnotation(RestController::class.java)).build()
+        return Docket(DocumentationType.SWAGGER_2)
+            .globalRequestParameters(globalRequestParameters())
+            .select()
+            .apis(RequestHandlerSelectors.withClassAnnotation(RestController::class.java))
+            .build()
     }
+
+    fun globalRequestParameters(): List<RequestParameter> = listOf(
+        RequestParameterBuilder()
+            .`in`(ParameterType.HEADER)
+            .name("requestId")
+            .required(true)
+            .query { param -> param.model { model -> model.scalarModel(ScalarType.STRING) } }.build()
+    )
 
     @Bean
     fun httpClient(): HttpClient = HttpClient.create()
