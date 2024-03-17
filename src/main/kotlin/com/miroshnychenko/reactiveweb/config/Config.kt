@@ -7,8 +7,12 @@ import com.mongodb.reactivestreams.client.MongoClients
 import io.netty.channel.ChannelOption
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.InjectionPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Scope
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
@@ -16,10 +20,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 import springfox.documentation.builders.RequestHandlerSelectors
-import springfox.documentation.builders.RequestParameterBuilder
-import springfox.documentation.schema.ScalarType
-import springfox.documentation.service.ParameterType
-import springfox.documentation.service.RequestParameter
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spring.web.plugins.Docket
 import java.time.Duration
@@ -44,6 +44,15 @@ class Config : AbstractReactiveMongoConfiguration() {
     }
 
     @Bean
+    @Scope("prototype")
+    fun logger(injectionPoint: InjectionPoint): Logger = LoggerFactory
+        .getLogger(
+            injectionPoint.methodParameter?.containingClass // constructor
+                ?: injectionPoint.field?.declaringClass
+        )
+
+
+    @Bean
     fun usersMicroserviceOpenAPI(): OpenAPI {
         return OpenAPI().info(
             Info().title("MIROSHNYCHENKO").description("reactiveweb").version("0.0.1-SNAPSHOT")
@@ -53,19 +62,10 @@ class Config : AbstractReactiveMongoConfiguration() {
     @Bean
     fun api(): Docket {
         return Docket(DocumentationType.SWAGGER_2)
-            .globalRequestParameters(globalRequestParameters())
             .select()
             .apis(RequestHandlerSelectors.withClassAnnotation(RestController::class.java))
             .build()
     }
-
-    fun globalRequestParameters(): List<RequestParameter> = listOf(
-        RequestParameterBuilder()
-            .`in`(ParameterType.HEADER)
-            .name("requestId")
-            .required(true)
-            .query { param -> param.model { model -> model.scalarModel(ScalarType.STRING) } }.build()
-    )
 
     @Bean
     fun httpClient(): HttpClient = HttpClient.create()

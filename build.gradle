@@ -29,31 +29,17 @@ repositories {
 }
 
 dependencies {
-	implementation ('org.springframework.boot:spring-boot-starter-webflux') {
-		exclude group: "org.springframework", module: "spring-webflux"
-	}
-	implementation 'org.springframework:spring-webflux:5.3.4'
+	implementation ('org.springframework.boot:spring-boot-starter-webflux')
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
 
 	implementation 'org.jetbrains.kotlin:kotlin-reflect'
 
-//	implementation("io.projectreactor:reactor-core:3.4.0")
-//	implementation 'io.projectreactor.netty:reactor-netty:1.0.4'
-
 	//jackson dependencies
 	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.16.2'
-//	implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
-//	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.1'
-//	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.1'
-//	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.1'
-//	implementation 'com.fasterxml.jackson.core:jackson-core:2.11.1'
 
-	//reactor-debug-agent
-//	implementation('io.projectreactor:reactor-tools:3.4.0')
-
-//	runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.107.Final'
+	runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.107.Final'
 
 	//testing
 	testImplementation ('org.springframework.boot:spring-boot-starter-test') {
