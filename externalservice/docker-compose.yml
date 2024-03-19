@@ -21,7 +21,7 @@ services:
 
   order-search-service:
     build:
-      context: ./order-search-service
+      context: order-search-service
       dockerfile: Dockerfile
     image: order-search-service
     ports:
@@ -29,7 +29,7 @@ services:
 
   product-info-service:
     build:
-      context: ./product-info-service
+      context: product-info-service
       dockerfile: Dockerfile
     image: product-info-service
     ports:
