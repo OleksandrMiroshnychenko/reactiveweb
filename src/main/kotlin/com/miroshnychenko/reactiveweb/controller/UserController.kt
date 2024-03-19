@@ -14,10 +14,7 @@ import springfox.documentation.annotations.ApiIgnore
 
 @RestController
 @RequestMapping("/user")
-class UserController(private val orderInfoManager: OrderInfoManager) {
-
-    @Autowired
-    lateinit var log: Logger
+class UserController(private val orderInfoManager: OrderInfoManager, private val log: Logger) {
 
     @GetMapping(value = ["/orderInfosV2"], produces = [MediaType.APPLICATION_NDJSON_VALUE])
     fun getOrderInfosByUserId(

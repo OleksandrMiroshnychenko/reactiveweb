@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
 @Service
-class UserService(private val userRepository: UserRepository) {
-
-    @Autowired
-    lateinit var log: Logger
+class UserService(private val userRepository: UserRepository, private val log: Logger) {
 
     fun getUserPhoneById(id: String): Mono<User> = userRepository.findById(id).doOnEach(LoggingUtil.logOnError {
         log.info(

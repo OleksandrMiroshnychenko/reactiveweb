@@ -40,8 +40,7 @@ class OrderInfoManager(
 
     private fun getOrdersByPhone(phone: String): Flux<Order> = orderSearchService.getUserOrders(phone)
 
-    private fun getBestProductByProductCode(productCode: String): Mono<Product> =
+    fun getBestProductByProductCode(productCode: String): Mono<Product> =
         productInfoService.getOrderProducts(productCode)
-            .onErrorResume { Flux.empty() }
             .reduce { o1, o2 -> if (o1.score > o2.score) o1 else o2 }
 }

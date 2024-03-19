@@ -10,6 +10,7 @@ import io.swagger.v3.oas.models.info.Info
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InjectionPoint
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Scope
@@ -27,6 +28,12 @@ import java.time.Duration
 @Configuration
 @EnableReactiveMongoRepositories(basePackages = ["com.miroshnychenko.reactiveweb.repository"])
 class Config : AbstractReactiveMongoConfiguration() {
+
+    @Value("\${externalService.orderSearchService.url}")
+    lateinit var orderSearchServiceUrl: String
+
+    @Value("\${externalService.productInfoService.url}")
+    lateinit var productInfoServiceUrl: String
 
     override fun getDatabaseName(): String {
         return "admin"
@@ -73,6 +80,10 @@ class Config : AbstractReactiveMongoConfiguration() {
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000);
 
     @Bean
-    fun webClient(httpClient: HttpClient): WebClient =
-        WebClient.builder().clientConnector(ReactorClientHttpConnector(httpClient)).build()
+    fun orderSearchServiceWebClient(httpClient: HttpClient): WebClient =
+        WebClient.builder().clientConnector(ReactorClientHttpConnector(httpClient)).baseUrl(orderSearchServiceUrl).build()
+
+    @Bean
+    fun productInfoServiceWebClient(httpClient: HttpClient): WebClient =
+        WebClient.builder().clientConnector(ReactorClientHttpConnector(httpClient)).baseUrl(productInfoServiceUrl).build()
 }

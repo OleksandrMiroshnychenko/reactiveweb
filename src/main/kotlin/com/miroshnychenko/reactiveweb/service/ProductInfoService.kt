@@ -11,14 +11,11 @@ import org.springframework.web.util.UriComponentsBuilder
 import reactor.core.publisher.Flux
 
 @Service
-class ProductInfoService(private val webClient: WebClient) {
-
-    @Autowired
-    lateinit var log: Logger
+class ProductInfoService(private val productInfoServiceWebClient: WebClient, private val log: Logger) {
 
     fun getOrderProducts(productCode: String): Flux<Product> =
-        webClient.get().uri(
-            UriComponentsBuilder.fromUriString("http://localhost:8083/productInfoService/product/names")
+        productInfoServiceWebClient.get().uri(
+            UriComponentsBuilder.fromUriString("/productInfoService/product/names")
                 .queryParam("productCode", productCode)
                 .buildAndExpand()
                 .toUriString()
@@ -27,4 +24,5 @@ class ProductInfoService(private val webClient: WebClient) {
             .bodyToFlux(Product::class.java)
             .doOnEach(logOnError { log.info("Exception from ProductInfoService: ${it?.message}") })
             .doOnEach(logOnNext { log.info("Found a product: $it") })
+            .onErrorResume { Flux.empty() }
 }
