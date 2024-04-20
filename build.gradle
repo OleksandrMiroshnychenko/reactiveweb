@@ -56,7 +56,6 @@ java {
 java.sourceCompatibility = JavaVersion.VERSION_11
 group = 'com.miroshnychenko'
 version = '0.0.1-SNAPSHOT'
-description = 'Simple registration/login/cart backend'
 test {
 	useJUnitPlatform()
 }
